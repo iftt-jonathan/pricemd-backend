@@ -66,8 +66,13 @@ resource "aws_lambda_function" "lambdas" {
 }
 
 resource "aws_apigatewayv2_api" "http_api" {
-  name          = "multi-lambda-api"
+  name          = "pricemd"
   protocol_type = "HTTP"
+  cors_configuration {
+    allow_origins = ["*"]
+    allow_methods = ["POST", "GET", "OPTIONS"]
+    allow_headers = ["Content-Type", "X-Amz-Date", "Authorization", "X-Api-Key", "X-Amz-Security-Token"]
+  }
 }
 
 resource "aws_apigatewayv2_stage" "default" {
