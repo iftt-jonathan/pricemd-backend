@@ -5,10 +5,6 @@ set -e
 if [ ! -d .miniconda ]; then
   echo "Conda not installed. Installing..."
   wget "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh" -N -O ./miniconda.sh
-  if [$? -ne 0]; then
-    echo "Error downloading miniconda. Exiting"
-    exit 1
-  fi
   sh ./miniconda.sh -b -p ./.miniconda
   rm ./miniconda.sh
 fi
@@ -22,6 +18,7 @@ fi
 
 if [ ! -d .venv ]; then
   echo "VENV not found. Creating..."
+  conda create -n py312 python=3.12 pip -y
   conda run -n py312 python -m venv .venv
 fi
 
