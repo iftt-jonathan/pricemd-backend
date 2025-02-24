@@ -1,17 +1,13 @@
 # Route configuration
 locals {
   lambda_zip = "lambda-output.zip"
+  lambda_layer_zip = "lambda-layer.zip"
+  runtime = "python3.12"
 
   lambda_functions = [
     { route = "POST /api/v1/procedure/search", handler = "lambda.routes.procedure_router.search_handler" },
     { route = "GET /api/v1/procedure/{procedureId}/by-insurance/{insuranceId}", handler = "lambda.routes.procedure_router.get_handler" }
   ]
-
-  # Name each lambda according to its route
-  lambda_map = { for fn in local.lambda_functions : fn.route => {
-    function_name = replace(fn.route, "/[^a-zA-Z0-9]/", "_")
-    handler       = fn.handler
-  }}
 }
 
 # Infrastructure setup
@@ -54,12 +50,28 @@ resource "aws_iam_role_policy_attachment" "lambda_logs" {
   policy_arn = aws_iam_policy.lambda_logging.arn
 }
 
+locals {
+  # Name each lambda according to its route
+  lambda_map = { for fn in local.lambda_functions : fn.route => {
+    function_name = replace(fn.route, "/[^a-zA-Z0-9]/", "_")
+    handler       = fn.handler
+  }}
+}
+
+resource "aws_lambda_layer_version" "lambda_layer" {
+  filename            = local.lambda_layer_zip
+  layer_name          = "pricemd_layer"
+  description         = "Layer for shared libraries"
+  compatible_runtimes = [local.runtime]
+}
+
 resource "aws_lambda_function" "lambdas" {
   for_each      = local.lambda_map
   function_name = each.value.function_name
   role          = aws_iam_role.lambda_role.arn
   handler       = each.value.handler
-  runtime       = "python3.13"
+  runtime       = local.runtime
+  layers        = [aws_lambda_layer_version.lambda_layer.arn]
 
   filename         = local.lambda_zip
   source_code_hash = filebase64sha256(local.lambda_zip)

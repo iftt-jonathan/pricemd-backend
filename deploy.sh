@@ -1,15 +1,39 @@
 #!/usr/bin/env bash
 LAMBDA_PATH="./lambda"
+TERRAFORM_PATH="./deployment"
+VENV_PATH="./.venv"
 
-echo "Zipping lambdas..."
-zip -r lambda-output.zip $LAMBDA_PATH || exit 1
+set -e
 
-if [ ! -f .terraform.lock.hcl ]; then
-  echo "Lock file does not exist. Running terraform init..."
-  terraform init || exit 1
+echo "VENV not found. Running setup..."
+if [ ! -d .venv ]; then
+  source setup.sh
 else
-  echo "Lock file found. Skipping init."
+  echo "VENV found. Skipping setup."
 fi
 
-echo "Deploying infrastructure..."
-terraform apply -auto-approve
+echo "Zipping lambda layer..."
+mkdir $TERRAFORM_PATH/python
+cp -pr $VENV_PATH/lib $TERRAFORM_PATH/python/
+(
+  cd $TERRAFORM_PATH
+  zip -FSr lambda-layer.zip python
+  rm -r python
+)
+
+echo "Zipping lambdas..."
+zip -FSr $TERRAFORM_PATH/lambda-output.zip $LAMBDA_PATH
+
+(
+  cd $TERRAFORM_PATH
+
+  if [ ! -f .terraform.lock.hcl ]; then
+    echo "Lock file does not exist. Running terraform init..."
+    terraform init
+  else
+    echo "Lock file found. Skipping init."
+  fi
+
+  echo "Deploying infrastructure..."
+  terraform apply -auto-approve
+)
