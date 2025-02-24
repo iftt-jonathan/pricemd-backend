@@ -8,6 +8,7 @@ if [ ! -d .miniconda ]; then
   if [$? -ne 0]; then
     echo "Error downloading miniconda. Exiting"
     exit 1
+  fi
   sh ./miniconda.sh -b -p ./.miniconda
   rm ./miniconda.sh
 fi
