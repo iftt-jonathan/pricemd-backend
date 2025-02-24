@@ -5,8 +5,8 @@ VENV_PATH="./.venv"
 
 set -e
 
-echo "VENV not found. Running setup..."
 if [ ! -d .venv ]; then
+  echo "VENV not found. Running setup..."
   source setup.sh
 else
   echo "VENV found. Skipping setup."
