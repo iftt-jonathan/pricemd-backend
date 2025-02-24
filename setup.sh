@@ -5,6 +5,9 @@ set -e
 if [ ! -d .miniconda ]; then
   echo "Conda not installed. Installing..."
   wget "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh" -N -O ./miniconda.sh
+  if [$? -ne 0]; then
+    echo "Error downloading miniconda. Exiting"
+    exit 1
   sh ./miniconda.sh -b -p ./.miniconda
   rm ./miniconda.sh
 fi
