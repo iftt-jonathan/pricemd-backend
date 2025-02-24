@@ -18,7 +18,6 @@ fi
 
 if [ ! -d .venv ]; then
   echo "VENV not found. Creating..."
-  conda create -n py312 python=3.12 pip -y
   conda run -n py312 python -m venv .venv
 fi
 
