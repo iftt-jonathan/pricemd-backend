@@ -1,5 +1,5 @@
 import json
-import pyathena
+# import pyathena
 
 
 def search_handler(event, context):
