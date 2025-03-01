@@ -23,3 +23,6 @@ def test_get_handler():
     assert body["procedure_name"] == "Tonsil Tumor Removal"
     assert body["insurance_id"] == 4
     assert body["hospitals"] == [{"hospital_id": 66, "price": 55.00}]
+
+def test_failure():
+    assert False
