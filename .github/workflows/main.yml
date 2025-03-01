@@ -5,35 +5,58 @@ on:
     branches:
     - main
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+      
+      - name: Install Dependencies
+        run: 
+          pip install -r requirements.txt
+
+      - name: where-am-i
+        run: ls ${{ github.workspace }}
+
+      - name: test_script
+        run: pytest ${{ github.workspace }}/lambda/routes/test_procedure_router.py
+
   deploy:
     runs-on: ubuntu-latest
+    needs: test
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4.1.0
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+      - name: my-testing
+        run:
+          python3 ${{ github.workspace }}/scratch/hello_world.py
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@v4.1.0
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws-region: us-east-1
 
-      - name: Install Terraform
-        run: |
-          sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
-          wget -O- https://apt.releases.hashicorp.com/gpg | \
-          gpg --dearmor | \
-          sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
-          gpg --no-default-keyring \
-          --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg \
-          --fingerprint
-          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
-          https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
-          sudo tee /etc/apt/sources.list.d/hashicorp.list
-          sudo apt update
-          sudo apt-get install terraform
+      # - name: Install Terraform
+      #   run: |
+      #     sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
+      #     wget -O- https://apt.releases.hashicorp.com/gpg | \
+      #     gpg --dearmor | \
+      #     sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
+      #     gpg --no-default-keyring \
+      #     --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg \
+      #     --fingerprint
+      #     echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+      #     https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
+      #     sudo tee /etc/apt/sources.list.d/hashicorp.list
+      #     sudo apt update
+      #     sudo apt-get install terraform
           
-      - name: Run deploy script
-        run: ./deploy.sh
+      # - name: Run deploy script
+      #   run: ./deploy.sh
     
