@@ -14,3 +14,5 @@ Run `setup.sh` on WSL or Linux machine. Set Python environment in VS Code to `.v
 
 ### Deploy to AWS
 Run `deploy.sh`, ensure `terraform` executable is accessible and has a configured AWS account.
+
+Contributors: Jonathan Ballard, Matheus Plinta, Rebekah Daniels
