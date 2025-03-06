@@ -120,3 +120,16 @@ resource "aws_lambda_permission" "api_gateway_permissions" {
 output "api_gateway_url" {
   value = aws_apigatewayv2_api.http_api.api_endpoint
 }
+
+
+data "aws_s3_bucket" "existing_bucket" {
+  bucket = "428-pricemd"
+}
+
+# Upload the API Gateway URL to a specific path in the PriceMD bucket
+resource "aws_s3_object" "api_gateway_url_file" {
+  bucket  = data.aws_s3_bucket.existing_bucket.id
+  key     = "api/url-latest"
+  content = aws_apigatewayv2_api.http_api.api_endpoint
+  acl     = "private" # currently private, we might need to set up an API key so that people can't spam this
+}
