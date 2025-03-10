@@ -131,5 +131,18 @@ resource "aws_s3_object" "api_gateway_url_file" {
   bucket  = data.aws_s3_bucket.existing_bucket.id
   key     = "api/url-latest"
   content = aws_apigatewayv2_api.http_api.api_endpoint
-  acl     = "private" # currently private, we might need to set up an API key so that people can't spam this
+  acl     = "public-read" # need to set CORS later for hardening
+}
+
+resource "aws_s3_bucket_policy" "public_read_policy" {
+  bucket = data.aws_s3_bucket.existing_bucket.id
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect    = "Allow",
+      Principal = "*",
+      Action    = "s3:GetObject",
+      Resource  = "arn:aws:s3:::428-pricemd/api/url-latest"
+    }]
+  })
 }
