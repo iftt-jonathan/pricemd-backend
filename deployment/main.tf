@@ -126,6 +126,14 @@ data "aws_s3_bucket" "existing_bucket" {
   bucket = "428-pricemd"
 }
 
+resource "aws_s3_bucket_public_access_block" "allow_public" {
+  bucket                  = data.aws_s3_bucket.existing_bucket.id
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
 # Upload the API Gateway URL to a specific path in the PriceMD bucket
 resource "aws_s3_object" "api_gateway_url_file" {
   bucket  = data.aws_s3_bucket.existing_bucket.id
