@@ -3,6 +3,7 @@ locals {
   lambda_zip = "lambda-output.zip"
   lambda_layer_zip = "lambda-layer.zip"
   runtime = "python3.12"
+  bucket_name = "428-pricemd"
 
   lambda_functions = [
     { route = "POST /api/v1/procedure/search", handler = "lambda.routes.procedure_router.search_handler" },
@@ -123,7 +124,7 @@ output "api_gateway_url" {
 
 
 data "aws_s3_bucket" "existing_bucket" {
-  bucket = "428-pricemd"
+  bucket = bucket_name
 }
 
 resource "aws_s3_bucket_public_access_block" "allow_public" {
@@ -140,4 +141,17 @@ resource "aws_s3_object" "api_gateway_url_file" {
   key     = "api/url-latest"
   content = aws_apigatewayv2_api.http_api.api_endpoint
   acl     = "public-read" # need to set CORS later for hardening
+}
+
+resource "aws_s3_bucket_policy" "public_read_policy" {
+  bucket = data.aws_s3_bucket.existing_bucket.id
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect    = "Allow",
+      Principal = "*",
+      Action    = "s3:GetObject",
+      Resource  = "arn:aws:s3:::${local.bucket_name}/api/url-latest"
+    }]
+  })
 }
