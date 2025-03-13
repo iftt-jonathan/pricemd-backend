@@ -122,9 +122,15 @@ output "api_gateway_url" {
   value = aws_apigatewayv2_api.http_api.api_endpoint
 }
 
-
 data "aws_s3_bucket" "existing_bucket" {
-  bucket = bucket_name
+  bucket = local.bucket_name
+}
+
+resource "aws_s3_bucket_ownership_controls" "pricemd_s3_ownership" {
+  bucket = data.aws_s3_bucket.existing_bucket.id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
 }
 
 resource "aws_s3_bucket_public_access_block" "allow_public" {
@@ -137,21 +143,13 @@ resource "aws_s3_bucket_public_access_block" "allow_public" {
 
 # Upload the API Gateway URL to a specific path in the PriceMD bucket
 resource "aws_s3_object" "api_gateway_url_file" {
+  depends_on = [
+    aws_s3_bucket_ownership_controls.pricemd_s3_ownership,
+    aws_s3_bucket_public_access_block.allow_public,
+  ]
+
   bucket  = data.aws_s3_bucket.existing_bucket.id
   key     = "api/url-latest"
   content = aws_apigatewayv2_api.http_api.api_endpoint
   acl     = "public-read" # need to set CORS later for hardening
-}
-
-resource "aws_s3_bucket_policy" "public_read_policy" {
-  bucket = data.aws_s3_bucket.existing_bucket.id
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [{
-      Effect    = "Allow",
-      Principal = "*",
-      Action    = "s3:GetObject",
-      Resource  = "arn:aws:s3:::${local.bucket_name}/api/url-latest"
-    }]
-  })
 }
