@@ -1,15 +1,12 @@
 import json
 import pyathena
 
+from query import query_handler
+
 
 def search_handler(event, context):
-    return {
-        "statusCode": 200,
-        "headers": {"Content-Type": "application/json"},
-        "body": json.dumps(
-            [{"procedure_id": 3, "procedure_name": "Tonsil Tumor Removal"}]
-        ),
-    }
+    return query_handler(event, context)
+    
 
 
 def get_handler(event, context):
