@@ -73,7 +73,7 @@ resource "aws_lambda_layer_version" "lambda_layer" {
 resource "aws_lambda_function" "lambdas" {
   for_each      = local.lambda_map
   function_name = each.value.function_name
-  role          = aws_iam_role.query-athena-role.arn
+  role          = data.aws_iam_role.query-athena-role.arn
   handler       = each.value.handler
   runtime       = local.runtime
   layers        = [aws_lambda_layer_version.lambda_layer.arn]
