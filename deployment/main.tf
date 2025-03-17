@@ -3,6 +3,7 @@ locals {
   lambda_zip = "lambda-output.zip"
   lambda_layer_zip = "lambda-layer.zip"
   runtime = "python3.12"
+  bucket_name = "428-pricemd"
 
   lambda_functions = [
     { route = "POST /api/v1/procedure/search", handler = "lambda.routes.procedure_router.search_handler" },
@@ -81,7 +82,7 @@ resource "aws_apigatewayv2_api" "http_api" {
   name          = "pricemd"
   protocol_type = "HTTP"
   cors_configuration {
-    allow_origins = ["*"]
+    allow_origins = ["https://pricemd-dev.onrender.com", "https://pricemd.onrender.com"]
     allow_methods = ["HEAD", "GET", "POST", "PUT", "DELETE", "OPTIONS"]
     allow_headers = ["Content-Type", "X-Amz-Date", "Authorization", "X-Api-Key", "X-Amz-Security-Token"]
   }
@@ -119,4 +120,36 @@ resource "aws_lambda_permission" "api_gateway_permissions" {
 # Output API Gateway URL
 output "api_gateway_url" {
   value = aws_apigatewayv2_api.http_api.api_endpoint
+}
+
+data "aws_s3_bucket" "existing_bucket" {
+  bucket = local.bucket_name
+}
+
+resource "aws_s3_bucket_ownership_controls" "pricemd_s3_ownership" {
+  bucket = data.aws_s3_bucket.existing_bucket.id
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "allow_public" {
+  bucket                  = data.aws_s3_bucket.existing_bucket.id
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
+# Upload the API Gateway URL to a specific path in the PriceMD bucket
+resource "aws_s3_object" "api_gateway_url_file" {
+  depends_on = [
+    aws_s3_bucket_ownership_controls.pricemd_s3_ownership,
+    aws_s3_bucket_public_access_block.allow_public,
+  ]
+
+  bucket  = data.aws_s3_bucket.existing_bucket.id
+  key     = "api/url-latest"
+  content = aws_apigatewayv2_api.http_api.api_endpoint
+  acl     = "public-read" # need to set CORS later for hardening
 }
