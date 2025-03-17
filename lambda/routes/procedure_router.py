@@ -1,5 +1,4 @@
 import json
-import pyathena
 
 import boto3
 import time

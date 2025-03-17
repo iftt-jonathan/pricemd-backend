@@ -29,6 +29,10 @@ resource "aws_iam_role" "lambda_role" {
   })
 }
 
+data "aws_iam_role" "query-athena-role" {
+  name = "QueryAthenaRole"
+}
+
 resource "aws_iam_policy" "lambda_logging" {
   name        = "lambda_logging"
   description = "IAM policy for logging from a lambda"
@@ -69,10 +73,11 @@ resource "aws_lambda_layer_version" "lambda_layer" {
 resource "aws_lambda_function" "lambdas" {
   for_each      = local.lambda_map
   function_name = each.value.function_name
-  role          = aws_iam_role.lambda_role.arn
+  role          = aws_iam_role.query-athena-role.arn
   handler       = each.value.handler
   runtime       = local.runtime
   layers        = [aws_lambda_layer_version.lambda_layer.arn]
+  timeout       = 6
 
   filename         = local.lambda_zip
   source_code_hash = filebase64sha256(local.lambda_zip)
