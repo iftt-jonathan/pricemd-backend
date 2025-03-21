@@ -5,13 +5,30 @@ on:
     branches:
     - main
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+      
+      - name: Install Dependencies
+        run: 
+          pip install -r requirements.txt
+
+      - name: test_script
+        run: pytest ${{ github.workspace }}/lambda/routes/test_procedure_router.py
+
   deploy:
     runs-on: ubuntu-latest
+    needs: test
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+                
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4.1.0
         with:
