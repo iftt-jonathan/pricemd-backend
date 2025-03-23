@@ -1,6 +1,7 @@
 import json
 import boto3
 import time
+from hospital_info import get_hospital_info
 
 
 def search_handler(event, context):
@@ -16,7 +17,7 @@ def get_handler(event, context):
                 "procedure_name": "Tonsil Tumor Removal",
                 "insurance_id": 4,
                 "insurance_name": "Medicare",
-                "hospitals": [{"hospital_id": 66, "price": 55.00}],
+                "hospitals": [{"hospital_id": 66, "price": 55.00, "hospital_info": get_hospital_info("placeholder")}],
                 "statistics": {"avg_cost": 500000.00}
             }
         ),
@@ -99,6 +100,9 @@ def lambda_handler_for_athena(event, context):
             item["procedure"] = data[0]
             item["standard_charge"] = data[1]
             item["hospital"] = data[2]
+
+            # Matches hospital info with name
+            item["hospital_info"] = get_hospital_info(data[2])
             
             body.append(item)
         
