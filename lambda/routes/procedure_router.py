@@ -5,34 +5,21 @@ from hospital_info import get_hospital_info
 
 
 def search_handler(event, context):
-    return query_handler(event, context)
-
-def get_handler(event, context):
-    return {
-        "statusCode": 200,
-        "headers": {"Content-Type": "application/json"},
-        "body": json.dumps(
-            {
-                "procedure_id": 3,
-                "procedure_name": "Tonsil Tumor Removal",
-                "insurance_id": 4,
-                "insurance_name": "Medicare",
-                "hospitals": [{"hospital_id": 66, "price": 55.00, "hospital_info": get_hospital_info("placeholder")}],
-                "statistics": {"avg_cost": 500000.00}
-            }
-        ),
-    }
-
-
-def query_handler(event, context):
     name = event['startsWith'][0][1]
-
+    query = f"SELECT * FROM hospitals.dummy_data WHERE procedure LIKE '%{name}%';"
     print("querying for: ", name)
 
-    query = f"SELECT * FROM hospitals.dummy_data WHERE procedure LIKE '%{name}%';"
-    
-    event = {"query": query}
-    
+    return query_handler(context, query)
+
+def get_handler(event, context):
+
+    procedure_name = 'Tonsillectomy'
+    query = f"SELECT * FROM hospitals.dummy_data WHERE procedure = '{procedure_name}';"
+
+    return query_handler(context, query)
+
+def query_handler(context, query):
+
     result = lambda_handler_for_athena({"query": query}, context)
 
     if "body" in result:
