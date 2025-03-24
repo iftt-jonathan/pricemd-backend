@@ -87,7 +87,7 @@ resource "aws_apigatewayv2_api" "http_api" {
   name          = "pricemd"
   protocol_type = "HTTP"
   cors_configuration {
-    allow_origins = ["https://pricemd-dev.onrender.com", "https://pricemd.onrender.com"]
+    allow_origins = ["https://pricemd-dev.onrender.com", "https://pricemd.onrender.com", "*"]
     allow_methods = ["HEAD", "GET", "POST", "PUT", "DELETE", "OPTIONS"]
     allow_headers = ["Content-Type", "X-Amz-Date", "Authorization", "X-Api-Key", "X-Amz-Security-Token"]
   }
