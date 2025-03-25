@@ -97,6 +97,11 @@ resource "aws_apigatewayv2_stage" "default" {
   api_id      = aws_apigatewayv2_api.http_api.id
   name        = "$default"
   auto_deploy = true
+
+  default_route_settings {
+    throttling_burst_limit = 100
+    throttling_rate_limit = 50
+  }
 }
 
 resource "aws_apigatewayv2_integration" "lambda_integrations" {
@@ -156,5 +161,5 @@ resource "aws_s3_object" "api_gateway_url_file" {
   bucket  = data.aws_s3_bucket.existing_bucket.id
   key     = "api/url-latest"
   content = aws_apigatewayv2_api.http_api.api_endpoint
-  acl     = "public-read" # need to set CORS later for hardening
+  acl     = "public-read"
 }
