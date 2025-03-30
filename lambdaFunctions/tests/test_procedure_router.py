@@ -1,5 +1,5 @@
-from procedure_router import get_handler, search_handler
-from hospital_info import get_hospital_info
+# from procedure_router import get_handler, search_handler
+# from hospital_info import get_hospital_info
 import json
 
 def test_search_handler():
@@ -26,7 +26,3 @@ def test_get_handler():
     # assert body["insurance_id"] == 4
     # assert body["hospitals"] == [{"hospital_id": 66, "price": 55.00, "hospital_info": get_hospital_info("placeholder")}]
     assert True
-
-    
-# def test_failure():
-#     assert False
