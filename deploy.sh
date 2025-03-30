@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-LAMBDA_PATH="./lambda"
+LAMBDA_PATH="./lambda/routes"
 TERRAFORM_PATH="./deployment"
 VENV_PATH="./.venv"
 
