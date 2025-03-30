@@ -6,8 +6,8 @@ locals {
   bucket_name = "428-pricemd"
 
   lambda_functions = [
-    { route = "POST /api/v1/procedure/search", handler = "lambda.routes.procedure_router.search_handler" },
-    { route = "GET /api/v1/procedure/{procedureId}/by-insurance/{insuranceId}", handler = "lambda.routes.procedure_router.get_handler" }
+    { route = "POST /api/v1/procedure/search", handler = "lambdaFunctions.routes.procedure_router.search_handler" },
+    { route = "GET /api/v1/procedure/{procedureId}/by-insurance/{insuranceId}", handler = "lambdaFunctions.routes.procedure_router.get_handler" }
   ]
 }
 

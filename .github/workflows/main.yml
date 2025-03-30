@@ -19,7 +19,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: test_script
-        run: pytest ${{ github.workspace }}/lambda/routes/test_procedure_router.py
+        run: pytest ${{ github.workspace }}/lambdaFunctions/tests/test_procedure_router.py
 
   deploy:
     runs-on: ubuntu-latest

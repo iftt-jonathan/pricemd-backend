@@ -1,7 +1,7 @@
 import json
 import boto3
 import time
-from hospital_info import get_hospital_info
+from lambdaFunctions.routes.hospital_info import get_hospital_info
 
 
 def search_handler(event, context):
