@@ -1,4 +1,4 @@
-from lambdas.db import query_handler
+from lambdas.db.athena_handlers import query_handler
 
 def search_handler(event, context):
     name = event['startsWith'][0][1]

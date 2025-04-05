@@ -22,7 +22,7 @@ cp -pr $VENV_PATH/lib $TERRAFORM_PATH/python/
 )
 
 echo "Zipping lambdas..."
-zip -FSr $TERRAFORM_PATH/lambda-output.zip $LAMBDA_PATH*
+zip -FSr $TERRAFORM_PATH/lambda-output.zip $LAMBDA_PATH/*
 
 (
   cd $TERRAFORM_PATH
