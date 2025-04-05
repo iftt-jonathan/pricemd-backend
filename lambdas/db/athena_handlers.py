@@ -1,15 +1,8 @@
 import json
 import boto3
 import time
-from lambdaFunctions.routes.hospital_info import get_hospital_info
 
-
-def search_handler(event, context):
-    name = event['startsWith'][0][1]
-    query = f"SELECT * FROM hospitals.dummy_data WHERE procedure LIKE '%{name}%';"
-    print("querying for: ", name)
-
-    return query_handler(context, query)
+from lambdas.db.hospital_info import get_hospital_info
 
 def query_handler(context, query):
 
