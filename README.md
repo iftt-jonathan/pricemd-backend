@@ -5,8 +5,9 @@ Tech stack: AWS Lambda serverless, Python runtime, S3 for data storage.
 Goals:
  - ✅ Get CI pipeline going
  - ✅ Get working Lambda uploads
- - Set up API to call dummy hospital CSV info and test on frontend
- - Set up some testing to make sure we don't break anything
+ - ✅ Set up API to call dummy hospital CSV info
+ - Test it out on hosted frontend 
+ - ✅ Set up some testing to make sure we don't break anything
  - Flesh out API from there
 
 ### Local development
