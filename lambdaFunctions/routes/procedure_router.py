@@ -11,13 +11,6 @@ def search_handler(event, context):
 
     return query_handler(context, query)
 
-def get_handler(event, context):
-
-    procedure_name = 'Tonsillectomy'
-    query = f"SELECT * FROM hospitals.dummy_data WHERE procedure = '{procedure_name}';"
-
-    return query_handler(context, query)
-
 def query_handler(context, query):
 
     result = lambda_handler_for_athena({"query": query}, context)
