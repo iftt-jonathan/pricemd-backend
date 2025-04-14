@@ -70,12 +70,11 @@ def lambda_handler_for_athena(event, context):
             data = [field['VarCharValue'] for field in row['Data']]
             
             item = {}
-            item["procedure"] = data[0]
-            item["standard_charge"] = data[1]
-            item["hospital"] = data[2]
-
-            # Matches hospital info with name
-            item["hospital_info"] = get_hospital_info(data[2])
+            item["hospital_name"] = data[2]  # Assuming hospital name is in the 3rd column
+            item["procedure_cost"] = int(data[1])  # Assuming cost is in the 2nd column
+            item["procedure_name"] = data[0]  # Assuming procedure name is in the 1st column
+            item["id"] = i  # Assign a unique ID based on the row index
+            item["coordinates"] = get_coordinates(data[2])  # Get coordinates for the hospital
             
             body.append(item)
         
@@ -86,4 +85,20 @@ def lambda_handler_for_athena(event, context):
     else:
         print(f"Query failed with status: {status}")
         return status
-    
+
+def get_coordinates(hospital_name):
+    # Predefined coordinates for known hospitals
+    coordinates_map = {
+        "Utah Valley Instacare": [40.24900997146722, -111.66523075629274],
+        "Intermountain Health Orem Community Hospital": [40.30287501307659, -111.70813516775206],
+        "LDS Hospital": [40.77844723816021, -111.88030670375836],
+        "St. Mark's Hospital": [40.685998548414844, -111.85689976890043],
+        "St. John's Health": [43.48072394467286, -110.74964222795302],
+        "Mayo Clinic": [44.02086539653745, -92.48116116074746],
+        "Cleveland Clinic": [41.502784288611196, -81.62076867122296],
+        "Johns Hopkins": [39.29682300960482, -76.59263471125068],
+    }
+
+    # Default to marbLocation if the hospital is not found
+    marb_location = [40.24683398116889, -111.64919394644316]
+    return coordinates_map.get(hospital_name, marb_location)
