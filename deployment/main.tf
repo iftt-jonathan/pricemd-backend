@@ -13,7 +13,7 @@ locals {
 
 # Infrastructure setup
 provider "aws" {
-  region = "us-east-1"
+  region = "us-east-2"
 }
 
 resource "aws_iam_role" "lambda_role" {
@@ -77,7 +77,7 @@ resource "aws_lambda_function" "lambdas" {
   handler       = each.value.handler
   runtime       = local.runtime
   layers        = [aws_lambda_layer_version.lambda_layer.arn]
-  timeout       = 6
+  timeout       = 12
 
   filename         = local.lambda_zip
   source_code_hash = filebase64sha256(local.lambda_zip)
