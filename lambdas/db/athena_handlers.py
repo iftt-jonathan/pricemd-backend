@@ -71,7 +71,7 @@ def lambda_handler_for_athena(event, context):
             
             item = {}
             item["hospital_name"] = data[2]  # Assuming hospital name is in the 3rd column
-            item["procedure_cost"] = int(data[1])  # Assuming cost is in the 2nd column
+            item["procedure_cost"] = data[1]  # Assuming cost is in the 2nd column
             item["procedure_name"] = data[0]  # Assuming procedure name is in the 1st column
             item["id"] = i  # Assign a unique ID based on the row index
             item["coordinates"] = get_coordinates(data[2])  # Get coordinates for the hospital
