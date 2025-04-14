@@ -1,7 +1,13 @@
 from lambdas.db.athena_handlers import query_handler
+import json
 
 def search_handler(event, context):
-    name = event['startsWith'][0][1]
+    # Parse the body from the event
+    body = json.loads(event['body'])
+
+    # Extract the search term
+    name = body['startsWith'][0][1]
+
     query = f"SELECT * FROM hospitals.dummy_data WHERE LOWER(procedure) LIKE LOWER('%{name}%');"
     print("querying for: ", name)
 

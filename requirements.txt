@@ -1,3 +1,4 @@
 PyAthena==3.12.2
 pytest
 boto3
+json
