@@ -1,6 +1,7 @@
 import json
 import boto3
 import time
+import random
 
 from lambdas.db.hospital_info import get_hospital_info
 
@@ -87,18 +88,16 @@ def lambda_handler_for_athena(event, context):
         return status
 
 def get_coordinates(hospital_name):
-    # Predefined coordinates for known hospitals
+    num = random
     coordinates_map = {
-        "Utah Valley Instacare": [40.24900997146722, -111.66523075629274],
-        "Intermountain Health Orem Community Hospital": [40.30287501307659, -111.70813516775206],
-        "LDS Hospital": [40.77844723816021, -111.88030670375836],
-        "St. Mark's Hospital": [40.685998548414844, -111.85689976890043],
-        "St. John's Health": [43.48072394467286, -110.74964222795302],
-        "Mayo Clinic": [44.02086539653745, -92.48116116074746],
-        "Cleveland Clinic": [41.502784288611196, -81.62076867122296],
-        "Johns Hopkins": [39.29682300960482, -76.59263471125068],
+        0: [40.24900997146722, -111.66523075629274],
+        1: [40.30287501307659, -111.70813516775206],
+        2: [40.77844723816021, -111.88030670375836],
+        3: [40.685998548414844, -111.85689976890043],
+        4: [43.48072394467286, -110.74964222795302],
+        5: [44.02086539653745, -92.48116116074746],
+        6: [41.502784288611196, -81.62076867122296],
+        7: [39.29682300960482, -76.59263471125068],
     }
 
-    # Default to marbLocation if the hospital is not found
-    marb_location = [40.24683398116889, -111.64919394644316]
-    return coordinates_map.get(hospital_name, marb_location)
+    return coordinates_map.get(random.randrange(0,7))
