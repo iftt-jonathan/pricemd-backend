@@ -2,7 +2,7 @@ from lambdas.db.athena_handlers import query_handler
 
 def search_handler(event, context):
     name = event['startsWith'][0][1]
-    query = f"SELECT * FROM hospitals.dummy_data WHERE procedure LIKE '%{name}%';"
+    query = f"SELECT * FROM hospitals.dummy_data WHERE LOWER(procedure) LIKE LOWER('%{name}%');"
     print("querying for: ", name)
 
     return query_handler(context, query)
